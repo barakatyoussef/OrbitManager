@@ -1,21 +1,32 @@
 let astronautes = JSON.parse(localStorage.getItem("astronautes")) || [];
 let indexModification = -1;
 
-renderTable()
+// ✅ Pagination (ADDED)
+let currentPage = 1;
+const rowsPerPage = 5; // change this number if you want more/less per page
+let lastRenderSource = astronautes; // keeps track of what we're displaying (full list or filtered)
+
+// ✅ Pagination buttons listeners (ADDED)
+// Make sure you have these elements in HTML: btnPrev, btnNext, pageInfo
+document.getElementById("btnPrev").addEventListener("click", () => {
+  goToPage(currentPage - 1);
+});
+
+document.getElementById("btnNext").addEventListener("click", () => {
+  goToPage(currentPage + 1);
+});
+
+renderTable();
 
 function createAstronaut() {
+  let nom = document.getElementById("astroName").value.trim();
+  let role = document.getElementById("astroRole").value;
+  let mission = document.getElementById("astroMission").value.trim();
 
-    let nom = document.getElementById("astroName").value.trim();
-    let role = document.getElementById("astroRole").value;
-    let mission = document.getElementById("astroMission").value.trim();
-
-    // 2. SÉCURITÉ RENFORCÉE (Validation)
-    // On vérifie si Nom OU Mission est vide
-    if (nom === "" || mission === "") {
-        alert("⛔ Stop ! Tous les champs sont obligatoires habibi !");
-        return; // Le mot magique : il arrête la fonction ici. Rien ne sera ajouté.
-    }
-
+  if (nom === "" || mission === "") {
+    alert("⛔ Stop ! Tous les champs sont obligatoires habibi !");
+    return;
+  }
 
   const nouveauAstronaute = {
     nom: nom,
@@ -27,40 +38,82 @@ function createAstronaut() {
     astronautes.push(nouveauAstronaute);
   } else {
     astronautes[indexModification] = nouveauAstronaute;
-    resetButton()
+    resetButton();
     indexModification = -1;
   }
-  savedata()
-  renderTable()
-  resetForm()
+
+  savedata();
+
+  // ✅ After adding/updating, go to last page so you can see the new item (ADDED)
+  lastRenderSource = astronautes;
+  const totalPages = Math.max(1, Math.ceil(lastRenderSource.length / rowsPerPage));
+  currentPage = totalPages;
+
+  renderTable();
+  resetForm();
 }
 
 function searchAstronauts() {
+  const query = document.getElementById("searchInput").value.toLowerCase();
 
-    const query = document.getElementById('searchInput').value.toLowerCase();
+  const filteredAstronautes = astronautes.filter(
+    (astro) =>
+      astro.nom.toLowerCase().includes(query) ||
+      astro.role.toLowerCase().includes(query) ||
+      astro.mission.toLowerCase().includes(query)
+  );
 
+  // ✅ Reset page when searching (ADDED)
+  currentPage = 1;
 
-    const filteredAstronautes = astronautes.filter(astro =>
-        astro.nom.toLowerCase().includes(query) ||
-        astro.role.toLowerCase().includes(query) ||
-        astro.mission.toLowerCase().includes(query)
-    );
+  renderTable(filteredAstronautes);
+}
 
-    renderTable(filteredAstronautes);
+// ✅ Pagination helpers (ADDED)
+function goToPage(page) {
+  const totalPages = Math.max(1, Math.ceil(lastRenderSource.length / rowsPerPage));
+  currentPage = Math.min(Math.max(1, page), totalPages);
+  renderTable(lastRenderSource);
+}
+
+function updatePaginationUI(totalItems) {
+  const totalPages = Math.max(1, Math.ceil(totalItems / rowsPerPage));
+
+  document.getElementById("pageInfo").textContent = `Page ${currentPage} / ${totalPages}`;
+
+  document.getElementById("btnPrev").disabled = currentPage === 1;
+  document.getElementById("btnNext").disabled = currentPage === totalPages;
+
+  document.getElementById("btnPrev").classList.toggle("opacity-50", currentPage === 1);
+  document.getElementById("btnPrev").classList.toggle("cursor-not-allowed", currentPage === 1);
+
+  document.getElementById("btnNext").classList.toggle("opacity-50", currentPage === totalPages);
+  document.getElementById("btnNext").classList.toggle("cursor-not-allowed", currentPage === totalPages);
 }
 
 // On ajoute un paramètre optionnel "sourceDonnees"
 function renderTable(sourceDonnees = astronautes) {
-    const tbody = document.getElementById('astroTableBody');
-    tbody.innerHTML = "";
+  // ✅ Remember current dataset (ADDED)
+  lastRenderSource = sourceDonnees;
 
-    sourceDonnees.forEach((astro) => {
-        // ASTUCE MAGIQUE 🌟 :
-        // On cherche à quel numéro se trouve cet astronaute dans la GRANDE liste principale
-        // Comme ça, même si on filtre, on supprime toujours la bonne personne.
-        const indexReel = astronautes.indexOf(astro);
+  const tbody = document.getElementById("astroTableBody");
+  tbody.innerHTML = "";
 
-        const row = `
+  // ✅ Pagination slice (ADDED)
+  const totalItems = sourceDonnees.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / rowsPerPage));
+
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  const start = (currentPage - 1) * rowsPerPage;
+  const end = start + rowsPerPage;
+  const pageItems = sourceDonnees.slice(start, end);
+
+  pageItems.forEach((astro) => {
+    // ASTUCE MAGIQUE 🌟 :
+    const indexReel = astronautes.indexOf(astro);
+
+    const row = `
         <tr class="border-b border-gray-700 hover:bg-gray-700/50 transition duration-200">
             <td class="p-4 text-white font-semibold text-base">${astro.nom}</td>
 
@@ -83,45 +136,56 @@ function renderTable(sourceDonnees = astronautes) {
             </td>
         </tr>`;
 
-        tbody.innerHTML += row;
-    });
+    tbody.innerHTML += row;
+  });
+
+  // ✅ Update UI (ADDED)
+  updatePaginationUI(totalItems);
 }
 
-function preparerEdition(index){
-    indexModification=index;
-    const asrtronaut=astronautes[indexModification]
+function preparerEdition(index) {
+  indexModification = index;
+  const asrtronaut = astronautes[indexModification];
 
-    document.getElementById("astroName").value= asrtronaut.nom
-    document.getElementById("astroRole").value= asrtronaut.role
-    document.getElementById("astroMission").value= asrtronaut.mission
+  document.getElementById("astroName").value = asrtronaut.nom;
+  document.getElementById("astroRole").value = asrtronaut.role;
+  document.getElementById("astroMission").value = asrtronaut.mission;
 
-    const btn=document.getElementById('btnSaveAstro')
-    btn.innerHTML = "<i class='fa-solid fa-rotate mr-2'></i> Mettre à jour";
-    btn.className = "w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition";
+  const btn = document.getElementById("btnSaveAstro");
+  btn.innerHTML = "<i class='fa-solid fa-rotate mr-2'></i> Mettre à jour";
+  btn.className =
+    "w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition";
 }
 
-function supprimer(index){
-    if(confirm('vous voulez vraiment supprimer ça')){
-        astronautes.splice(index,1)
-        renderTable()
-        savedata()
-    }
+function supprimer(index) {
+  if (confirm("vous voulez vraiment supprimer ça")) {
+    astronautes.splice(index, 1);
+    savedata();
+
+    // ✅ If we were showing filtered list, keep it; otherwise use full list (ADDED)
+    // Here we re-render using lastRenderSource, but after delete it may be stale if it was filtered.
+    // simplest: if lastRenderSource === astronautes (full list), renderTable() is fine.
+    // If you want delete to also remove from filtered view, just call renderTable(lastRenderSource) after updating it.
+    renderTable(lastRenderSource === astronautes ? astronautes : lastRenderSource.filter(a => astronautes.includes(a)));
+  }
 }
 
-function resetForm(){
-    document.getElementById("astroName").value=''
-    document.getElementById("astroRole").value='Commandant'
-    document.getElementById("astroMission").value=''
+function resetForm() {
+  document.getElementById("astroName").value = "";
+  document.getElementById("astroRole").value = "Commandant";
+  document.getElementById("astroMission").value = "";
 }
 
-function resetButton(){
-    const btn=document.getElementById('btnSaveAstro');
-    btn.innerHTML = "<i class='fa-solid fa-save mr-2'></i> Enregistrer";
-    btn.className = "w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition";
+function resetButton() {
+  const btn = document.getElementById("btnSaveAstro");
+  btn.innerHTML = "<i class='fa-solid fa-save mr-2'></i> Enregistrer";
+  btn.className =
+    "w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition";
 }
 
-function savedata(){
-    localStorage.setItem("astronautes",JSON.stringify(astronautes))
+function savedata() {
+  localStorage.setItem("astronautes", JSON.stringify(astronautes));
 }
+
 
 
