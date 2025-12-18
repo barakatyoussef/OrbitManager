@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrbitManager - Missions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #1f2937; }
+      ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+    </style>
+  </head>
+
+  <body class="bg-gray-900 text-gray-100 font-sans antialiased">
+    <div class="flex h-screen overflow-hidden">
+
+      <div id="sidebar-container" class="hidden md:flex"></div>
+
+      <div class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <header class="h-16 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-6 shadow-md z-10">
+          <button onclick="toggleSidebar()" class="md:hidden text-gray-300 hover:text-white focus:outline-none">
+            <i class="fa-solid fa-bars text-xl"></i>
+          </button>
+          <h2 class="text-xl font-semibold text-gray-100 ml-4 md:ml-0">Gestion des Missions</h2>
+          <div class="flex items-center space-x-4">
+               <div class="hidden md:flex items-center text-right">
+                   <p class="text-sm font-medium text-white">Admin</p>
+               </div>
+           </div>
+        </header>
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-900 p-6 scroll-smooth">
+
+          <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-6">
+            <h4 class="text-xl text-white font-bold mb-4"><i class="fa-solid fa-rocket mr-2"></i>Nouvelle Mission</h4>
+            <form id="missionForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+               <div>
+                  <label class="text-gray-400 text-sm">Nom de la Mission</label>
+                  <input type="text" id="missionName" placeholder="Ex: Apollo 13" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-blue-500 outline-none"/>
+               </div>
+
+               <div>
+                  <label class="text-gray-400 text-sm">Statut Actuel</label>
+                  <select id="missionStatus" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-blue-500 outline-none">
+                    <option value="En Préparation">En Préparation 🛠️</option>
+                    <option value="En Cours">En Cours 🚀</option>
+                    <option value="Terminée">Terminée ✅</option>
+                    <option value="Annulée">Annulée ❌</option>
+                  </select>
+               </div>
+
+               <div>
+                  <label class="text-gray-400 text-sm">Destination</label>
+                  <input type="text" id="missionDest" placeholder="Ex: Mars, ISS, Lune..." class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-blue-500 outline-none"/>
+               </div>
+
+               <div class="flex items-end">
+                  <button type="button" onclick="createMission()" id="btnSaveMission" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition">
+                    <i class="fa-solid fa-save mr-2"></i> Enregistrer Mission
+                  </button>
+               </div>
+            </form>
+          </div>
+
+          <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+            <div class="p-4 border-b border-gray-700 flex flex-col md:flex-row justify-between items-center gap-4">
+              <div class="relative w-full md:w-1/2">
+                 <input type="text" id="searchInput" onkeyup="searchMissions()" class="bg-gray-700 text-white text-sm rounded-lg block w-full p-2.5 pl-4" placeholder="Rechercher une mission..."/>
+              </div>
+              <button onclick="exportCSV()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow transition">
+                 <i class="fa-solid fa-file-csv mr-2"></i> Exporter CSV
+              </button>
+            </div>
+
+            <table class="w-full text-left text-gray-400">
+              <thead class="bg-gray-700 text-gray-200 uppercase text-xs">
+                <tr>
+                  <th class="p-4">Mission</th>
+                  <th class="p-4">Destination</th>
+                  <th class="p-4">Statut</th>
+                  <th class="p-4 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="missionTableBody" class="divide-y divide-gray-700"></tbody>
+            </table>
+
+            <div class="flex items-center justify-between p-4">
+               <button id="btnPrev" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">◀ Prev</button>
+               <span id="pageInfo" class="text-gray-300 font-semibold"></span>
+               <button id="btnNext" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Next ▶</button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="modalDetails" class="fixed inset-0 bg-gray-900 bg-opacity-80 hidden flex items-center justify-center z-50">
+        <div class="bg-gray-800 rounded-lg shadow-2xl w-11/12 md:w-1/2 lg:w-1/3 border border-gray-700">
+             <div class="flex justify-between items-center p-4 border-b border-gray-700">
+                <h3 class="text-xl font-bold text-white">Détails Mission</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-red-500 text-2xl font-bold">&times;</button>
+             </div>
+             <div id="contenuPourPDF" class="p-6 space-y-4">
+                <input type="text" id="detailNom" readonly class="w-full bg-gray-700 text-white rounded p-2 mb-2"/>
+                <input type="text" id="detailDest" readonly class="w-full bg-gray-700 text-white rounded p-2 mb-2"/>
+                <input type="text" id="detailStatus" readonly class="w-full bg-gray-700 text-white rounded p-2 mb-2"/>
+             </div>
+             <div class="flex justify-between p-4 border-t border-gray-700 bg-gray-900/50 rounded-b-lg">
+                <button onclick="downloadPDF()" class="bg-blue-600 text-white px-4 py-2 rounded">PDF</button>
+                <div>
+                    <button id="btnModalEdit" class="bg-yellow-600 text-white px-4 py-2 rounded"><i class="fa-solid fa-pen"></i></button>
+                    <button id="btnModalDelete" class="bg-red-600 text-white px-4 py-2 rounded"><i class="fa-solid fa-trash"></i></button>
+                </div>
+             </div>
+        </div>
+    </div>
+
+    <div id="modalDelete" class="fixed inset-0 bg-gray-900 bg-opacity-90 hidden flex items-center justify-center z-50">
+       <div class="bg-gray-800 rounded-lg shadow-2xl w-96 border border-red-500/50 p-6 text-center">
+            <h3 class="text-lg font-medium text-white mb-2">Supprimer la mission ?</h3>
+            <div class="flex justify-center space-x-4 mt-4">
+                <button onclick="closeDeleteModal()" class="bg-gray-600 text-white px-4 py-2 rounded">Annuler</button>
+                <button onclick="confirmerSuppressionDefinitive()" class="bg-red-600 text-white px-4 py-2 rounded">Oui</button>
+            </div>
+       </div>
+    </div>
+
+    <script src="assets/js/crud_missions.js"></script>
+
+    <script>
+      fetch('components/sidebar.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('sidebar-container').innerHTML = data;
+            const currentPage = window.location.pathname.split("/").pop();
+            const activeLink = document.querySelector(`a[href="${currentPage}"]`);
+            if (activeLink) {
+                activeLink.classList.remove("text-gray-300", "hover:text-white");
+                activeLink.classList.add("bg-gray-700", "text-blue-400", "font-bold");
+            }
+        });
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        if (sidebar) {
+          sidebar.classList.toggle("hidden");
+          sidebar.classList.toggle("absolute");
+          sidebar.classList.toggle("z-50");
+          sidebar.classList.toggle("h-full");
+        }
+      }
+    </script>
+  </body>
+</html>

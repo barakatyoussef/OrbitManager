@@ -1,6 +1,5 @@
-// ==========================================
 // 1. VARIABLES GLOBALES
-// ==========================================
+
 let astronautes = [];
 let lastRenderSource = [];
 let indexModification = -1;
@@ -9,9 +8,8 @@ let indexModification = -1;
 let currentPage = 1;
 const rowsPerPage = 5;
 
-// ==========================================
+
 // 2. INITIALISATION (Démarrage)
-// ==========================================
 document.addEventListener("DOMContentLoaded", () => {
   initData();
 
@@ -56,63 +54,47 @@ function demarrerAffichage() {
   renderTable();
 }
 
-// ==========================================
+
 // 3. FONCTIONS CRUD (Create, Update, Delete)
-// ==========================================
 function createAstronaut() {
   let nom = document.getElementById("astroName").value.trim();
   let role = document.getElementById("astroRole").value;
   let mission = document.getElementById("astroMission").value.trim();
 
   if (nom === "" || mission === "") {
-    alert("⛔ Stop ! Tous les champs sont obligatoires habibi !");
+    alert("⛔ Stop ! Tous les champs sont obligatoires !");
     return;
   }
 
   const nouveauAstronaute = { nom, role, mission };
 
-  // ===========================================
+
   // LOGIQUE SÉPARÉE : AJOUT vs MODIFICATION
-  // ===========================================
+
 
   if (indexModification === -1) {
-    // --- CAS 1 : AJOUT (Création) ---
+    // CAS 1 : AJOUT (Création)
     astronautes.push(nouveauAstronaute);
     savedata();
 
-    // On remet la liste complète
     lastRenderSource = astronautes;
 
-    // On calcule la nouvelle dernière page
-    const totalPages = Math.max(
-      1,
-      Math.ceil(lastRenderSource.length / rowsPerPage)
-    );
-
-    // 👉 ON VA À LA FIN pour voir le petit nouveau
+    const totalPages = Math.max(1,Math.ceil(lastRenderSource.length / rowsPerPage));
     currentPage = totalPages;
   } else {
-    // --- CAS 2 : MODIFICATION (Edition) ---
+    // CAS 2 : MODIFICATION (Edition)
     astronautes[indexModification] = nouveauAstronaute;
 
-    // On réinitialise le formulaire et le bouton
     resetButton();
     indexModification = -1;
     savedata();
 
-    // 👉 ICI LE CHANGEMENT : On NE change PAS currentPage.
-    // On reste sagement sur la page où on était.
-
-    // Petite astuce : Si on était en recherche, on rafraîchit la source
-    // pour être sûr que la modif s'affiche même dans les résultats filtrés
     if (lastRenderSource !== astronautes) {
-      // On re-déclenche la recherche pour mettre à jour les données affichées
       searchAstronauts();
-      return; // searchAstronauts s'occupe de l'affichage, on arrête là
+      return;
     }
   }
 
-  // Affichage standard (si on n'est pas passé par le return du search)
   renderTable(lastRenderSource);
   resetForm();
 }
@@ -131,9 +113,9 @@ function preparerEdition(index) {
     "w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition";
 }
 
-// ==========================================
+
 // 4. RECHERCHE & PAGINATION
-// ==========================================
+
 function searchAstronauts() {
   const query = document.getElementById("searchInput").value.toLowerCase();
 
@@ -144,15 +126,12 @@ function searchAstronauts() {
       astro.mission.toLowerCase().includes(query)
   );
 
-  currentPage = 1;
+  currentPage = 1;  // INITIALISATION DE PAGINATION PENDANT RECHERCHE
   renderTable(filtered);
 }
 
 function goToPage(page) {
-  const totalPages = Math.max(
-    1,
-    Math.ceil(lastRenderSource.length / rowsPerPage)
-  );
+  const totalPages = Math.max(1,Math.ceil(lastRenderSource.length / rowsPerPage));
   currentPage = Math.min(Math.max(1, page), totalPages);
   renderTable(lastRenderSource);
 }
@@ -161,7 +140,6 @@ function renderTable(sourceDonnees = astronautes) {
   lastRenderSource = sourceDonnees;
 
   const tbody = document.getElementById("astroTableBody");
-  if (!tbody) return;
 
   tbody.innerHTML = "";
 
@@ -222,9 +200,8 @@ function updatePaginationUI(totalPages) {
   }
 }
 
-// ==========================================
+
 // 5. EXPORT CSV
-// ==========================================
 function exportCSV() {
   const dataAExporter = lastRenderSource;
 
@@ -233,7 +210,7 @@ function exportCSV() {
     return;
   }
 
-  let csvContent = "\uFEFF"; // BOM pour Excel
+  let csvContent = "\uFEFF"; // BOM
   csvContent += "Nom;Rôle;Mission\n";
 
   dataAExporter.forEach((astro) => {
@@ -254,9 +231,8 @@ function exportCSV() {
   document.body.removeChild(link);
 }
 
-// ==========================================
+
 // 6. UTILITAIRES
-// ==========================================
 function savedata() {
   localStorage.setItem("astronautes", JSON.stringify(astronautes));
 }
@@ -274,16 +250,14 @@ function resetButton() {
     "w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition";
 }
 
-// ==========================================
+
 // 7. GESTION MODALE DÉTAILS & PDF
-// ==========================================
 let currentDetailIndex = -1;
 
 function voirDetails(indexOriginal) {
   currentDetailIndex = indexOriginal;
   const astro = astronautes[indexOriginal];
 
-  // Remplissage des inputs
   document.getElementById("detailNom").value = astro.nom;
   document.getElementById("detailRole").value = astro.role;
   document.getElementById("detailMission").value = astro.mission;
@@ -295,10 +269,9 @@ function voirDetails(indexOriginal) {
   };
 
   // BOUTON SUPPRIMER (Dans la modale détails)
-  // ✅ CORRECTION ICI : On ferme juste les détails et on lance la procédure de suppression (qui ouvre la modale rouge)
   document.getElementById("btnModalDelete").onclick = function () {
-    closeModal(); // 1. Fermer fiche détails
-    supprimer(indexOriginal); // 2. Ouvrir modale suppression
+    closeModal();
+    supprimer(indexOriginal);
   };
 
   document.getElementById("modalDetails").classList.remove("hidden");
@@ -320,9 +293,8 @@ function downloadPDF() {
   html2pdf().set(opt).from(element).save();
 }
 
-// ==========================================
+
 // 8. GESTION SUPPRESSION (MODALE ROUGE)
-// ==========================================
 let indexToDelete = -1;
 
 function supprimer(index) {
@@ -353,16 +325,8 @@ function confirmerSuppressionDefinitive() {
 // Gestion globale de la touche ECHAP pour fermer toutes les modales
 document.addEventListener("keydown", function (event) {
   if (event.key === "Escape") {
-    closeModal(); // Ferme détails
-    closeDeleteModal(); // Ferme suppression
+    closeModal();
+    closeDeleteModal();
   }
 });
 
-// Fermer au clic en dehors
-document.getElementById("modalDetails").addEventListener("click", function (e) {
-  if (e.target === this) closeModal();
-});
-// (Optionnel) Si tu veux que le clic en dehors ferme aussi la modale suppression
-/* document.getElementById("modalDelete").addEventListener("click", function (e) {
-    if (e.target === this) closeDeleteModal();
-}); */

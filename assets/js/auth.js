@@ -1,12 +1,10 @@
-// assets/js/auth.js
-
 console.log("Système de sécurité chargé...");
 
-// 1. On cible le formulaire
+
 const loginForm = document.getElementById('loginForm');
 const errorMsg = document.getElementById('errorMsg');
 
-// 2. Les utilisateurs par défaut (Donnés par le prof)
+// 2. Les utilisateurs par défaut
 const USERS = [
     {
         email: "admin@app.com",
@@ -22,10 +20,9 @@ const USERS = [
     }
 ];
 
-// 3. Écouter la soumission du formulaire
 if(loginForm) {
     loginForm.addEventListener('submit', (e) => {
-        e.preventDefault(); // Empêche la page de se recharger
+        e.preventDefault();
 
         const emailInput = document.getElementById('email').value;
         const passwordInput = document.getElementById('password').value;
@@ -34,8 +31,6 @@ if(loginForm) {
         const userFound = USERS.find(u => u.email === emailInput && u.password === passwordInput);
 
         if (userFound) {
-            // SUCCÈS : On enregistre l'utilisateur dans le navigateur
-            // C'est ça la consigne "Stockage de session dans localStorage"
             const sessionData = {
                 email: userFound.email,
                 role: userFound.role,
@@ -51,7 +46,6 @@ if(loginForm) {
         } else {
             // ÉCHEC : On affiche le message d'erreur
             errorMsg.classList.remove('hidden');
-            // Petite animation de secousse (optionnel mais stylé)
             loginForm.classList.add('animate-pulse');
             setTimeout(() => loginForm.classList.remove('animate-pulse'), 500);
         }
