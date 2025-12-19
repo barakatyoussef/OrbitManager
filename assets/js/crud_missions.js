@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function initData() {
-  const localData = localStorage.getItem("missions_db"); // ⚠️ CLÉ DIFFÉRENTE
+  const localData = localStorage.getItem("missions_db");
 
   if (localData) {
     console.log("💾 Chargement missions local...");
@@ -24,13 +24,13 @@ function initData() {
     demarrerAffichage();
   } else {
     console.log("🌍 Appel API Missions...");
-    // On utilise "users" mais on map différemment pour simuler des missions
+    //  pour simuler des missions
     fetch("https://jsonplaceholder.typicode.com/users")
       .then((response) => response.json())
       .then((data) => {
         missions = data.map((item) => ({
-          nom: "Mission " + item.company.name, // Ex: Mission Romaguera-Crona
-          destination: item.address.city,      // Ex: Gwenborough
+          nom: "Mission " + item.company.name,
+          destination: item.address.city,      
           statut: "En Préparation"
         }));
         savedata();

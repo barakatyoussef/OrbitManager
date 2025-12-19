@@ -52,8 +52,7 @@ if(loginForm) {
     });
 }
 
-// 4. Sécurité (Bonus) : Si on est déjà connecté, on va direct au dashboard
-// Comme ça l'admin ne doit pas se reconnecter à chaque fois
+// 4.Si on est déjà connecté, on va direct au dashboard
 const currentUser = JSON.parse(localStorage.getItem('orbitUser'));
 if (currentUser && currentUser.isLoggedIn && window.location.pathname.includes('index.html')) {
     window.location.href = 'dashboard.html';

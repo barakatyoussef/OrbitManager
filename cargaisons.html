@@ -3,13 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OrbitManager - Missions</title>
+    <title>OrbitManager - Cargaisons</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
       ::-webkit-scrollbar {
         width: 8px;
@@ -41,12 +43,22 @@
           >
             <i class="fa-solid fa-bars text-xl"></i>
           </button>
+
           <h2 class="text-xl font-semibold text-gray-100 ml-4 md:ml-0">
-            Gestion des Missions
+            Logistique & Cargaisons
           </h2>
+
           <div class="flex items-center space-x-4">
             <div class="hidden md:flex items-center text-right">
-              <p class="text-sm font-medium text-white">Admin</p>
+              <div class="mr-3">
+                <p class="text-sm font-medium text-white">Commandant Shepard</p>
+                <p class="text-xs text-blue-400 uppercase text-right">Admin</p>
+              </div>
+              <div
+                class="h-9 w-9 rounded-full bg-blue-600 flex items-center justify-center text-sm font-bold"
+              >
+                AD
+              </div>
             </div>
           </div>
         </header>
@@ -56,53 +68,63 @@
         >
           <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-6">
             <h4 class="text-xl text-white font-bold mb-4">
-              <i class="fa-solid fa-rocket mr-2"></i>Nouvelle Mission
+              <i class="fa-solid fa-boxes-packing mr-2"></i>Nouvelle Cargaison
             </h4>
-            <form
-              id="missionForm"
-              class="grid grid-cols-1 md:grid-cols-2 gap-4"
-            >
-              <div>
-                <label class="text-gray-400 text-sm">Nom de la Mission</label>
+
+            <form id="cargoForm" class="grid grid-cols-1 md:grid-cols-6 gap-4">
+              <div class="md:col-span-3">
+                <label class="text-gray-400 text-sm">Référence / Nom</label>
                 <input
                   type="text"
-                  id="missionName"
-                  placeholder="Ex: Apollo 13"
+                  id="cargoName"
+                  placeholder="Ex: CRG-Alpha-01"
                   class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-blue-500 outline-none"
                 />
               </div>
 
-              <div>
-                <label class="text-gray-400 text-sm">Statut Actuel</label>
+              <div class="md:col-span-3">
+                <label class="text-gray-400 text-sm">Type de Contenu</label>
                 <select
-                  id="missionStatus"
+                  id="cargoType"
                   class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-blue-500 outline-none"
                 >
-                  <option value="En Préparation">En Préparation 🛠️</option>
-                  <option value="En Cours">En Cours 🚀</option>
-                  <option value="Terminée">Terminée ✅</option>
-                  <option value="Annulée">Annulée ❌</option>
+                  <option value="Vivres">Vivres 🍎</option>
+                  <option value="Matériel">Matériel 🛠️</option>
+                  <option value="Carburant">Carburant ⛽</option>
+                  <option value="Scientifique">Scientifique 🔬</option>
                 </select>
               </div>
 
-              <div>
-                <label class="text-gray-400 text-sm">Destination</label>
+              <div class="md:col-span-2">
+                <label class="text-gray-400 text-sm">Poids (kg)</label>
                 <input
-                  type="text"
-                  id="missionDest"
-                  placeholder="Ex: Mars, ISS, Lune..."
+                  type="number"
+                  id="cargoWeight"
+                  placeholder="Ex: 500"
                   class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-blue-500 outline-none"
                 />
               </div>
 
-              <div class="flex items-end">
+              <div class="md:col-span-2">
+                <label class="text-gray-400 text-sm">État Livraison</label>
+                <select
+                  id="cargoStatus"
+                  class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-blue-500 outline-none"
+                >
+                  <option value="En Attente">En Attente ⏳</option>
+                  <option value="En Transit">En Transit 🚚</option>
+                  <option value="Livré">Livré ✅</option>
+                </select>
+              </div>
+
+              <div class="md:col-span-2 flex items-end">
                 <button
                   type="button"
-                  onclick="createMission()"
-                  id="btnSaveMission"
-                  class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition"
+                  onclick="createCargo()"
+                  id="btnSaveCargo"
+                  class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition flex items-center justify-center"
                 >
-                  <i class="fa-solid fa-save mr-2"></i> Enregistrer Mission
+                  <i class="fa-solid fa-save mr-2"></i> Enregistrer
                 </button>
               </div>
             </form>
@@ -115,12 +137,17 @@
               class="p-4 border-b border-gray-700 flex flex-col md:flex-row justify-between items-center gap-4"
             >
               <div class="relative w-full md:w-1/2">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                >
+                  <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+                </div>
                 <input
                   type="text"
                   id="searchInput"
-                  onkeyup="searchMissions()"
-                  class="bg-gray-700 text-white text-sm rounded-lg block w-full p-2.5 pl-4"
-                  placeholder="Rechercher une mission, une destination, un statut..."
+                  onkeyup="searchCargos()"
+                  class="bg-gray-700 text-white text-sm rounded-lg block w-full p-2.5 pl-10 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  placeholder="Rechercher une cargaison, un type, un statut..."
                 />
               </div>
               <button
@@ -134,14 +161,15 @@
             <table class="w-full text-left text-gray-400">
               <thead class="bg-gray-700 text-gray-200 uppercase text-xs">
                 <tr>
-                  <th class="p-4">Mission</th>
-                  <th class="p-4">Destination</th>
+                  <th class="p-4">Référence</th>
+                  <th class="p-4">Type</th>
+                  <th class="p-4">Poids</th>
                   <th class="p-4">Statut</th>
                   <th class="p-4 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody
-                id="missionTableBody"
+                id="cargoTableBody"
                 class="divide-y divide-gray-700"
               ></tbody>
             </table>
@@ -177,7 +205,7 @@
           class="flex justify-between items-center p-4 border-b border-gray-700"
         >
           <h3 class="text-xl font-bold text-white">
-            <i class="fa-solid fa-file-contract mr-2"></i> Détails Mission
+            <i class="fa-solid fa-clipboard-list mr-2"></i> Bordereau Cargaison
           </h3>
           <button
             onclick="closeModal()"
@@ -190,46 +218,57 @@
         <div id="contenuPourPDF" class="p-6 space-y-4">
           <div class="flex justify-center mb-4">
             <div
-              class="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center text-4xl text-white shadow-lg"
+              class="w-24 h-24 bg-orange-600 rounded-full flex items-center justify-center text-4xl text-white shadow-lg"
             >
-              <i class="fa-solid fa-rocket"></i>
+              <i class="fa-solid fa-box-open"></i>
             </div>
           </div>
 
-          <div>
-            <label class="block text-gray-400 text-sm font-bold mb-1"
-              >Nom de la Mission</label
-            >
-            <input
-              type="text"
-              id="detailNom"
-              readonly
-              class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label class="block text-gray-400 text-sm font-bold mb-1"
-              >Destination</label
-            >
-            <input
-              type="text"
-              id="detailDest"
-              readonly
-              class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label class="block text-gray-400 text-sm font-bold mb-1"
-              >Statut Actuel</label
-            >
-            <input
-              type="text"
-              id="detailStatus"
-              readonly
-              class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none"
-            />
+          <div class="grid grid-cols-2 gap-4">
+            <div class="col-span-2">
+              <label class="block text-gray-400 text-sm font-bold mb-1"
+                >Référence</label
+              >
+              <input
+                type="text"
+                id="detailName"
+                readonly
+                class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-gray-400 text-sm font-bold mb-1"
+                >Type</label
+              >
+              <input
+                type="text"
+                id="detailType"
+                readonly
+                class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-gray-400 text-sm font-bold mb-1"
+                >Poids (kg)</label
+              >
+              <input
+                type="text"
+                id="detailWeight"
+                readonly
+                class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none"
+              />
+            </div>
+            <div class="col-span-2">
+              <label class="block text-gray-400 text-sm font-bold mb-1"
+                >Statut Livraison</label
+              >
+              <input
+                type="text"
+                id="detailStatus"
+                readonly
+                class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none"
+              />
+            </div>
           </div>
         </div>
 
@@ -240,9 +279,8 @@
             onclick="downloadPDF()"
             class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow flex items-center"
           >
-            <i class="fa-solid fa-file-pdf"></i> PDF
+            <i class="fa-solid fa-file-pdf mr-2"></i> PDF
           </button>
-
           <div class="flex space-x-2">
             <button
               id="btnModalEdit"
@@ -266,7 +304,7 @@
       class="fixed inset-0 bg-gray-900 bg-opacity-90 hidden flex items-center justify-center z-50 transition-opacity"
     >
       <div
-        class="bg-gray-800 rounded-lg shadow-2xl w-96 border border-red-500/50 p-6 text-center transform scale-100 transition-transform"
+        class="bg-gray-800 rounded-lg shadow-2xl w-96 border border-red-500/50 p-6 text-center transform scale-100 transition-transform relative"
       >
         <button
           onclick="closeDeleteModal()"
@@ -280,17 +318,13 @@
         >
           <i class="fa-solid fa-triangle-exclamation text-red-500 text-xl"></i>
         </div>
-
         <h3 class="text-lg leading-6 font-medium text-white mb-2">
-          Supprimer l'astronaute ?
+          Supprimer la cargaison ?
         </h3>
-
         <p class="text-sm text-gray-400 mb-6">
-          Cette action est <strong>irréversible</strong>. Êtes-vous sûr de
-          vouloir supprimer définitivement cet astronaute de la base de données
-          ?
+          Cette action est <strong>irréversible</strong>. La cargaison sera
+          retirée de l'inventaire.
         </p>
-
         <div class="flex justify-center space-x-4">
           <button
             onclick="closeDeleteModal()"
@@ -308,7 +342,7 @@
       </div>
     </div>
 
-    <script src="assets/js/crud_missions.js"></script>
+    <script src="assets/js/crud_cargaisons.js"></script>
 
     <script>
       fetch("components/sidebar.html")
@@ -327,13 +361,9 @@
           }
         });
       function toggleSidebar() {
-        const sidebar = document.getElementById("sidebar");
-        if (sidebar) {
-          sidebar.classList.toggle("hidden");
-          sidebar.classList.toggle("absolute");
-          sidebar.classList.toggle("z-50");
-          sidebar.classList.toggle("h-full");
-        }
+        document
+          .getElementById("sidebar")
+          .classList.toggle("-translate-x-full");
       }
     </script>
   </body>

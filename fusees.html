@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrbitManager - Fusées</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #1f2937; }
+      ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+    </style>
+  </head>
+
+  <body class="bg-gray-900 text-gray-100 font-sans antialiased">
+    <div class="flex h-screen overflow-hidden">
+
+      <div id="sidebar-container" class="hidden md:flex"></div>
+
+      <div class="flex-1 flex flex-col h-screen overflow-hidden relative">
+
+        <header class="h-16 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-6 shadow-md z-10">
+          <button onclick="toggleSidebar()" class="md:hidden text-gray-300 hover:text-white focus:outline-none">
+            <i class="fa-solid fa-bars text-xl"></i>
+          </button>
+
+          <h2 class="text-xl font-semibold text-gray-100 ml-4 md:ml-0">Parc de Fusées</h2>
+
+          <div class="flex items-center space-x-4">
+             <div class="hidden md:flex items-center text-right">
+                 <div class="mr-3">
+                    <p class="text-sm font-medium text-white">Commandant Shepard</p>
+                    <p class="text-xs text-blue-400 uppercase text-right">Admin</p>
+                 </div>
+                 <div class="h-9 w-9 rounded-full bg-blue-600 flex items-center justify-center text-sm font-bold">AD</div>
+             </div>
+          </div>
+        </header>
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-900 p-6 scroll-smooth">
+
+          <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-6">
+            <h4 class="text-xl text-white font-bold mb-4">
+                <i class="fa-solid fa-shuttle-space mr-2"></i>Nouvelle Fusée
+            </h4>
+
+            <form id="fuseeForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+               <div>
+                  <label class="text-gray-400 text-sm">Nom du Modèle</label>
+                  <input type="text" id="fuseeName" placeholder="Ex: Falcon 9" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-blue-500 outline-none"/>
+               </div>
+
+               <div>
+                  <label class="text-gray-400 text-sm">Constructeur</label>
+                  <input type="text" id="fuseeMaker" placeholder="Ex: SpaceX, NASA, ESA..." class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-blue-500 outline-none"/>
+               </div>
+
+               <div>
+                  <label class="text-gray-400 text-sm">État Technique</label>
+                  <select id="fuseeStatus" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-blue-500 outline-none">
+                    <option value="Opérationnelle">Opérationnelle ✅</option>
+                    <option value="En Maintenance">En Maintenance 🛠️</option>
+                    <option value="En Test">En Test ⚠️</option>
+                    <option value="Retirée">Retirée du service 🛑</option>
+                  </select>
+               </div>
+
+               <div class="flex items-end">
+                  <button type="button" onclick="createFusee()" id="btnSaveFusee" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition">
+                    <i class="fa-solid fa-save mr-2"></i> Enregistrer Fusée
+                  </button>
+               </div>
+            </form>
+          </div>
+
+          <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+
+            <div class="p-4 border-b border-gray-700 flex flex-col md:flex-row justify-between items-center gap-4">
+              <div class="relative w-full md:w-1/2">
+                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+                 </div>
+                 <input
+                    type="text"
+                    id="searchInput"
+                    onkeyup="searchFusees()"
+                    class="bg-gray-700 text-white text-sm rounded-lg block w-full p-2.5 pl-10 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    placeholder="Rechercher un modèle, un constructeur, un état..."
+                 />
+              </div>
+              <button onclick="exportCSV()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow transition">
+                 <i class="fa-solid fa-file-csv mr-2"></i> Exporter CSV
+              </button>
+            </div>
+
+            <table class="w-full text-left text-gray-400">
+              <thead class="bg-gray-700 text-gray-200 uppercase text-xs">
+                <tr>
+                  <th class="p-4">Modèle</th>
+                  <th class="p-4">Constructeur</th>
+                  <th class="p-4">État</th>
+                  <th class="p-4 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="fuseeTableBody" class="divide-y divide-gray-700">
+                </tbody>
+            </table>
+
+            <div class="flex items-center justify-between p-4">
+               <button id="btnPrev" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">◀ Prev</button>
+               <span id="pageInfo" class="text-gray-300 font-semibold"></span>
+               <button id="btnNext" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Next ▶</button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="modalDetails" class="fixed inset-0 bg-gray-900 bg-opacity-80 hidden flex items-center justify-center z-50 transition-opacity">
+        <div class="bg-gray-800 rounded-lg shadow-2xl w-11/12 md:w-1/2 lg:w-1/3 border border-gray-700 transform scale-100 transition-transform">
+
+             <div class="flex justify-between items-center p-4 border-b border-gray-700">
+                <h3 class="text-xl font-bold text-white">
+                    <i class="fa-solid fa-file-contract mr-2"></i> Fiche Technique
+                </h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-red-500 text-2xl font-bold">&times;</button>
+             </div>
+
+             <div id="contenuPourPDF" class="p-6 space-y-4">
+                <div class="flex justify-center mb-4">
+                    <div class="w-24 h-24 bg-purple-600 rounded-full flex items-center justify-center text-4xl text-white shadow-lg">
+                      <i class="fa-solid fa-rocket"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-gray-400 text-sm font-bold mb-1">Modèle</label>
+                    <input type="text" id="detailNom" readonly class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none"/>
+                </div>
+                <div>
+                    <label class="block text-gray-400 text-sm font-bold mb-1">Constructeur</label>
+                    <input type="text" id="detailMaker" readonly class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none"/>
+                </div>
+                <div>
+                    <label class="block text-gray-400 text-sm font-bold mb-1">État Technique</label>
+                    <input type="text" id="detailStatus" readonly class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none"/>
+                </div>
+             </div>
+
+             <div class="flex justify-between p-4 border-t border-gray-700 bg-gray-900/50 rounded-b-lg">
+                <button onclick="downloadPDF()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow flex items-center">
+                    <i class="fa-solid fa-file-pdf mr-2"></i> PDF
+                </button>
+                <div class="flex space-x-2">
+                    <button id="btnModalEdit" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded shadow"><i class="fa-solid fa-pen"></i></button>
+                    <button id="btnModalDelete" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow"><i class="fa-solid fa-trash"></i></button>
+                </div>
+             </div>
+        </div>
+    </div>
+
+    <div id="modalDelete" class="fixed inset-0 bg-gray-900 bg-opacity-90 hidden flex items-center justify-center z-50 transition-opacity">
+       <div class="bg-gray-800 rounded-lg shadow-2xl w-96 border border-red-500/50 p-6 text-center transform scale-100 transition-transform relative">
+
+            <button onclick="closeDeleteModal()" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-2xl font-bold focus:outline-none" title="Fermer">
+                &times;
+            </button>
+
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-900/50 mb-4">
+                <i class="fa-solid fa-triangle-exclamation text-red-500 text-xl"></i>
+            </div>
+
+            <h3 class="text-lg leading-6 font-medium text-white mb-2">Démanteler la fusée ?</h3>
+
+            <p class="text-sm text-gray-400 mb-6">
+                Cette action est <strong>irréversible</strong>. Êtes-vous sûr de vouloir supprimer définitivement cette fusée de la flotte ?
+            </p>
+
+            <div class="flex justify-center space-x-4">
+                <button onclick="closeDeleteModal()" class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded shadow transition">
+                    Annuler
+                </button>
+                <button onclick="confirmerSuppressionDefinitive()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow transition flex items-center">
+                    <i class="fa-solid fa-trash mr-2"></i> Oui, supprimer
+                </button>
+            </div>
+       </div>
+    </div>
+
+    <script src="assets/js/crud_fusees.js"></script>
+
+    <script>
+      fetch('components/sidebar.html')
+        .then(response => response.text())
+        .then(data => {
+            const container = document.getElementById('sidebar-container');
+            container.innerHTML = data;
+            const currentPage = window.location.pathname.split("/").pop();
+            const activeLink = document.querySelector(`a[href="${currentPage}"]`);
+            if (activeLink) {
+                activeLink.classList.remove("text-gray-300", "hover:text-white");
+                activeLink.classList.add("bg-gray-700", "text-blue-400", "font-bold");
+            }
+        });
+    </script>
+  </body>
+</html>
