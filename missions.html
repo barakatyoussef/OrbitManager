@@ -35,19 +35,45 @@
         <header
           class="h-16 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-6 shadow-md z-10"
         >
-          <button
-            onclick="toggleSidebar()"
-            class="md:hidden text-gray-300 hover:text-white focus:outline-none"
+          <h2
+            id="t-page_missions"
+            class="text-xl font-semibold text-gray-100 ml-4 md:ml-0"
           >
-            <i class="fa-solid fa-bars text-xl"></i>
-          </button>
-          <h2 class="text-xl font-semibold text-gray-100 ml-4 md:ml-0">
             Gestion des Missions
           </h2>
+
           <div class="flex items-center space-x-4">
+            <select
+              id="langSelector"
+              class="bg-gray-700 text-sm text-gray-300 rounded border-gray-600 focus:ring-blue-500"
+            >
+              <option value="fr">FR 🇫🇷</option>
+              <option value="en">EN 🇬🇧</option>
+              <option value="ar">AR 🇲🇦</option>
+            </select>
+
             <div class="hidden md:flex items-center text-right">
-              <p class="text-sm font-medium text-white">Admin</p>
+              <div class="mr-3">
+                <p id="userNameDisplay" class="text-sm font-medium text-white">
+                  Chargement...
+                </p>
+                <p id="userRoleDisplay" class="text-xs text-blue-400 uppercase">
+                  ...
+                </p>
+              </div>
+              <img
+                src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff"
+                class="h-9 w-9 rounded-full border border-gray-600"
+              />
             </div>
+
+            <button
+              id="logoutBtn"
+              class="text-gray-400 hover:text-red-500 transition-colors p-2"
+              title="Se déconnecter"
+            >
+              <i class="fa-solid fa-power-off text-lg"></i>
+            </button>
           </div>
         </header>
 
@@ -56,14 +82,17 @@
         >
           <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-6">
             <h4 class="text-xl text-white font-bold mb-4">
-              <i class="fa-solid fa-rocket mr-2"></i>Nouvelle Mission
+              <i class="fa-solid fa-rocket mr-2"></i>
+              <span id="t-mission_new">Nouvelle Mission</span>
             </h4>
             <form
               id="missionForm"
               class="grid grid-cols-1 md:grid-cols-2 gap-4"
             >
               <div>
-                <label class="text-gray-400 text-sm">Nom de la Mission</label>
+                <label id="t-lbl_mission_name" class="text-gray-400 text-sm"
+                  >Nom de la Mission</label
+                >
                 <input
                   type="text"
                   id="missionName"
@@ -73,20 +102,32 @@
               </div>
 
               <div>
-                <label class="text-gray-400 text-sm">Statut Actuel</label>
+                <label id="t-lbl_mission_status" class="text-gray-400 text-sm"
+                  >Statut Actuel</label
+                >
                 <select
                   id="missionStatus"
                   class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-blue-500 outline-none"
                 >
-                  <option value="En Préparation">En Préparation 🛠️</option>
-                  <option value="En Cours">En Cours 🚀</option>
-                  <option value="Terminée">Terminée ✅</option>
-                  <option value="Annulée">Annulée ❌</option>
+                  <option id="t-opt_prep" value="En Préparation">
+                    En Préparation 🛠️
+                  </option>
+                  <option id="t-opt_ongoing" value="En Cours">
+                    En Cours 🚀
+                  </option>
+                  <option id="t-opt_finished" value="Terminée">
+                    Terminée ✅
+                  </option>
+                  <option id="t-opt_cancelled" value="Annulée">
+                    Annulée ❌
+                  </option>
                 </select>
               </div>
 
               <div>
-                <label class="text-gray-400 text-sm">Destination</label>
+                <label id="t-lbl_mission_dest" class="text-gray-400 text-sm"
+                  >Destination</label
+                >
                 <input
                   type="text"
                   id="missionDest"
@@ -102,7 +143,8 @@
                   id="btnSaveMission"
                   class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition"
                 >
-                  <i class="fa-solid fa-save mr-2"></i> Enregistrer Mission
+                  <i class="fa-solid fa-save mr-2"></i>
+                  <span id="t-btn_save_mission">Enregistrer Mission</span>
                 </button>
               </div>
             </form>
@@ -127,17 +169,18 @@
                 onclick="exportCSV()"
                 class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow transition"
               >
-                <i class="fa-solid fa-file-csv mr-2"></i> Exporter CSV
+                <i class="fa-solid fa-file-csv mr-2"></i>
+                <span id="t-btn_csv">Exporter CSV</span>
               </button>
             </div>
 
             <table class="w-full text-left text-gray-400">
               <thead class="bg-gray-700 text-gray-200 uppercase text-xs">
                 <tr>
-                  <th class="p-4">Mission</th>
-                  <th class="p-4">Destination</th>
-                  <th class="p-4">Statut</th>
-                  <th class="p-4 text-center">Actions</th>
+                  <th id="t-th_mission" class="p-4">Mission</th>
+                  <th id="t-th_dest" class="p-4">Destination</th>
+                  <th id="t-th_status" class="p-4">Statut</th>
+                  <th id="t-th_actions" class="p-4 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody
@@ -177,7 +220,8 @@
           class="flex justify-between items-center p-4 border-b border-gray-700"
         >
           <h3 class="text-xl font-bold text-white">
-            <i class="fa-solid fa-file-contract mr-2"></i> Détails Mission
+            <i class="fa-solid fa-file-contract mr-2"></i>
+            <span id="t-modal_mission_title">Détails Mission</span>
           </h3>
           <button
             onclick="closeModal()"
@@ -197,7 +241,9 @@
           </div>
 
           <div>
-            <label class="block text-gray-400 text-sm font-bold mb-1"
+            <label
+              id="t-lbl_mission_name_modal"
+              class="block text-gray-400 text-sm font-bold mb-1"
               >Nom de la Mission</label
             >
             <input
@@ -209,7 +255,9 @@
           </div>
 
           <div>
-            <label class="block text-gray-400 text-sm font-bold mb-1"
+            <label
+              id="t-lbl_mission_dest_modal"
+              class="block text-gray-400 text-sm font-bold mb-1"
               >Destination</label
             >
             <input
@@ -221,7 +269,9 @@
           </div>
 
           <div>
-            <label class="block text-gray-400 text-sm font-bold mb-1"
+            <label
+              id="t-lbl_mission_status_modal"
+              class="block text-gray-400 text-sm font-bold mb-1"
               >Statut Actuel</label
             >
             <input
@@ -240,7 +290,7 @@
             onclick="downloadPDF()"
             class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow flex items-center"
           >
-            <i class="fa-solid fa-file-pdf"></i> PDF
+            <i class="fa-solid fa-file-pdf mr-2"></i> PDF
           </button>
 
           <div class="flex space-x-2">
@@ -281,14 +331,16 @@
           <i class="fa-solid fa-triangle-exclamation text-red-500 text-xl"></i>
         </div>
 
-        <h3 class="text-lg leading-6 font-medium text-white mb-2">
-          Supprimer l'astronaute ?
+        <h3
+          id="t-delete_mission_title"
+          class="text-lg leading-6 font-medium text-white mb-2"
+        >
+          Supprimer la mission ?
         </h3>
 
-        <p class="text-sm text-gray-400 mb-6">
-          Cette action est <strong>irréversible</strong>. Êtes-vous sûr de
-          vouloir supprimer définitivement cet astronaute de la base de données
-          ?
+        <p id="t-warn_irreversible_mission" class="text-sm text-gray-400 mb-6">
+          Cette action est <strong>irréversible</strong>. La mission sera
+          supprimée de l'historique.
         </p>
 
         <div class="flex justify-center space-x-4">
@@ -296,19 +348,21 @@
             onclick="closeDeleteModal()"
             class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded shadow transition"
           >
-            Annuler
+            <span id="t-btn_cancel">Annuler</span>
           </button>
           <button
             onclick="confirmerSuppressionDefinitive()"
             class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow transition flex items-center"
           >
-            <i class="fa-solid fa-trash mr-2"></i> Oui, supprimer
+            <i class="fa-solid fa-trash mr-2"></i>
+            <span id="t-btn_confirm_delete">Oui, supprimer</span>
           </button>
         </div>
       </div>
     </div>
 
     <script src="assets/js/crud_missions.js"></script>
+    <script src="assets/js/lang.js"></script>
 
     <script>
       fetch("components/sidebar.html")
@@ -325,16 +379,46 @@
               "font-bold"
             );
           }
+          const savedLang = localStorage.getItem('orbitLang') || 'fr';
+
+          // On s'assure que la fonction existe avant de l'appeler
+          if (typeof changeLanguage === "function") {
+              changeLanguage(savedLang);
+
+              // Petit hack pour mettre à jour le selecteur de langue du Header aussi
+              const langSelect = document.getElementById('langSelector');
+              if(langSelect) langSelect.value = savedLang;
+          }
         });
-      function toggleSidebar() {
-        const sidebar = document.getElementById("sidebar");
-        if (sidebar) {
-          sidebar.classList.toggle("hidden");
-          sidebar.classList.toggle("absolute");
-          sidebar.classList.toggle("z-50");
-          sidebar.classList.toggle("h-full");
+      document.addEventListener("DOMContentLoaded", () => {
+        // 1. VÉRIFICATION DE LA SESSION (Sécurité)
+        const user = JSON.parse(localStorage.getItem("orbitUser"));
+
+        if (!user || !user.isLoggedIn) {
+          // Si pas connecté, on renvoie à la page de login
+          window.location.href = "index.html";
+          return;
         }
-      }
+
+        // 2. MISE À JOUR DU HEADER (Nom & Rôle)
+        const nameEl = document.getElementById("userNameDisplay");
+        const roleEl = document.getElementById("userRoleDisplay");
+
+        if (nameEl) nameEl.innerText = user.name;
+        if (roleEl)
+          roleEl.innerText = user.role === "admin" ? "Commandant" : "Officier";
+
+        // 3. GESTION DÉCONNEXION
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", () => {
+            if (confirm("Voulez-vous vraiment quitter la station ?")) {
+              localStorage.removeItem("orbitUser");
+              window.location.href = "index.html";
+            }
+          });
+        }
+      });
     </script>
   </body>
 </html>

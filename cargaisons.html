@@ -37,29 +37,45 @@
         <header
           class="h-16 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-6 shadow-md z-10"
         >
-          <button
-            onclick="toggleSidebar()"
-            class="md:hidden text-gray-300 hover:text-white focus:outline-none"
+          <h2
+            id="t-page_cargaisons"
+            class="text-xl font-semibold text-gray-100 ml-4 md:ml-0"
           >
-            <i class="fa-solid fa-bars text-xl"></i>
-          </button>
-
-          <h2 class="text-xl font-semibold text-gray-100 ml-4 md:ml-0">
             Logistique & Cargaisons
           </h2>
 
           <div class="flex items-center space-x-4">
+            <select
+              class="bg-gray-700 text-sm text-gray-300 rounded border-gray-600 focus:ring-blue-500"
+              id="langSelector"
+            >
+              <option value="fr">FR 🇫🇷</option>
+              <option value="en">EN 🇬🇧</option>
+              <option value="ar">AR 🇲🇦</option>
+            </select>
+
             <div class="hidden md:flex items-center text-right">
               <div class="mr-3">
-                <p class="text-sm font-medium text-white">Commandant Shepard</p>
-                <p class="text-xs text-blue-400 uppercase text-right">Admin</p>
+                <p id="userNameDisplay" class="text-sm font-medium text-white">
+                  Chargement...
+                </p>
+                <p id="userRoleDisplay" class="text-xs text-blue-400 uppercase">
+                  ...
+                </p>
               </div>
-              <div
-                class="h-9 w-9 rounded-full bg-blue-600 flex items-center justify-center text-sm font-bold"
-              >
-                AD
-              </div>
+              <img
+                src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff"
+                class="h-9 w-9 rounded-full border border-gray-600"
+              />
             </div>
+
+            <button
+              id="logoutBtn"
+              class="text-gray-400 hover:text-red-500 transition-colors p-2"
+              title="Se déconnecter"
+            >
+              <i class="fa-solid fa-power-off text-lg"></i>
+            </button>
           </div>
         </header>
 
@@ -68,12 +84,15 @@
         >
           <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-6">
             <h4 class="text-xl text-white font-bold mb-4">
-              <i class="fa-solid fa-boxes-packing mr-2"></i>Nouvelle Cargaison
+              <i class="fa-solid fa-boxes-packing mr-2"></i>
+              <span id="t-cargo_new">Nouvelle Cargaison</span>
             </h4>
 
             <form id="cargoForm" class="grid grid-cols-1 md:grid-cols-6 gap-4">
               <div class="md:col-span-3">
-                <label class="text-gray-400 text-sm">Référence / Nom</label>
+                <label id="t-lbl_ref" class="text-gray-400 text-sm"
+                  >Référence / Nom</label
+                >
                 <input
                   type="text"
                   id="cargoName"
@@ -83,20 +102,30 @@
               </div>
 
               <div class="md:col-span-3">
-                <label class="text-gray-400 text-sm">Type de Contenu</label>
+                <label id="t-lbl_type" class="text-gray-400 text-sm"
+                  >Type de Contenu</label
+                >
                 <select
                   id="cargoType"
                   class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-blue-500 outline-none"
                 >
-                  <option value="Vivres">Vivres 🍎</option>
-                  <option value="Matériel">Matériel 🛠️</option>
-                  <option value="Carburant">Carburant ⛽</option>
-                  <option value="Scientifique">Scientifique 🔬</option>
+                  <option id="t-opt_food" value="Vivres">Vivres 🍎</option>
+                  <option id="t-opt_material" value="Matériel">
+                    Matériel 🛠️
+                  </option>
+                  <option id="t-opt_fuel" value="Carburant">
+                    Carburant ⛽
+                  </option>
+                  <option id="t-opt_science" value="Scientifique">
+                    Scientifique 🔬
+                  </option>
                 </select>
               </div>
 
               <div class="md:col-span-2">
-                <label class="text-gray-400 text-sm">Poids (kg)</label>
+                <label id="t-lbl_weight" class="text-gray-400 text-sm"
+                  >Poids (kg)</label
+                >
                 <input
                   type="number"
                   id="cargoWeight"
@@ -106,14 +135,20 @@
               </div>
 
               <div class="md:col-span-2">
-                <label class="text-gray-400 text-sm">État Livraison</label>
+                <label id="t-lbl_status" class="text-gray-400 text-sm"
+                  >État Livraison</label
+                >
                 <select
                   id="cargoStatus"
                   class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-blue-500 outline-none"
                 >
-                  <option value="En Attente">En Attente ⏳</option>
-                  <option value="En Transit">En Transit 🚚</option>
-                  <option value="Livré">Livré ✅</option>
+                  <option id="t-stat_pending" value="En Attente">
+                    En Attente ⏳
+                  </option>
+                  <option id="t-stat_transit" value="En Transit">
+                    En Transit 🚚
+                  </option>
+                  <option id="t-stat_delivered" value="Livré">Livré ✅</option>
                 </select>
               </div>
 
@@ -124,7 +159,8 @@
                   id="btnSaveCargo"
                   class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition flex items-center justify-center"
                 >
-                  <i class="fa-solid fa-save mr-2"></i> Enregistrer
+                  <i class="fa-solid fa-save mr-2"></i>
+                  <span id="t-btn_save">Enregistrer</span>
                 </button>
               </div>
             </form>
@@ -154,18 +190,19 @@
                 onclick="exportCSV()"
                 class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow transition"
               >
-                <i class="fa-solid fa-file-csv mr-2"></i> Exporter CSV
+                <i class="fa-solid fa-file-csv mr-2"></i>
+                <span id="t-btn_csv">Exporter CSV</span>
               </button>
             </div>
 
             <table class="w-full text-left text-gray-400">
               <thead class="bg-gray-700 text-gray-200 uppercase text-xs">
                 <tr>
-                  <th class="p-4">Référence</th>
-                  <th class="p-4">Type</th>
-                  <th class="p-4">Poids</th>
-                  <th class="p-4">Statut</th>
-                  <th class="p-4 text-center">Actions</th>
+                  <th id="t-th_ref" class="p-4">Référence</th>
+                  <th id="t-th_type" class="p-4">Type</th>
+                  <th id="t-th_weight" class="p-4">Poids</th>
+                  <th id="t-th_status" class="p-4">Statut</th>
+                  <th id="t-th_actions" class="p-4 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody
@@ -205,7 +242,8 @@
           class="flex justify-between items-center p-4 border-b border-gray-700"
         >
           <h3 class="text-xl font-bold text-white">
-            <i class="fa-solid fa-clipboard-list mr-2"></i> Bordereau Cargaison
+            <i class="fa-solid fa-clipboard-list mr-2"></i>
+            <span id="t-modal_cargo_title">Bordereau Cargaison</span>
           </h3>
           <button
             onclick="closeModal()"
@@ -226,7 +264,7 @@
 
           <div class="grid grid-cols-2 gap-4">
             <div class="col-span-2">
-              <label class="block text-gray-400 text-sm font-bold mb-1"
+              <label id="t-lbl_ref_modal" class="block text-gray-400 text-sm font-bold mb-1"
                 >Référence</label
               >
               <input
@@ -237,7 +275,7 @@
               />
             </div>
             <div>
-              <label class="block text-gray-400 text-sm font-bold mb-1"
+              <label id="t-lbl_type_modal" class="block text-gray-400 text-sm font-bold mb-1"
                 >Type</label
               >
               <input
@@ -248,7 +286,7 @@
               />
             </div>
             <div>
-              <label class="block text-gray-400 text-sm font-bold mb-1"
+              <label id="t-lbl_weight_modal" class="block text-gray-400 text-sm font-bold mb-1"
                 >Poids (kg)</label
               >
               <input
@@ -259,7 +297,7 @@
               />
             </div>
             <div class="col-span-2">
-              <label class="block text-gray-400 text-sm font-bold mb-1"
+              <label id="t-lbl_status_modal" class="block text-gray-400 text-sm font-bold mb-1"
                 >Statut Livraison</label
               >
               <input
@@ -318,10 +356,14 @@
         >
           <i class="fa-solid fa-triangle-exclamation text-red-500 text-xl"></i>
         </div>
-        <h3 class="text-lg leading-6 font-medium text-white mb-2">
+
+        <h3
+          id="t-delete_cargo_title"
+          class="text-lg leading-6 font-medium text-white mb-2"
+        >
           Supprimer la cargaison ?
         </h3>
-        <p class="text-sm text-gray-400 mb-6">
+        <p id="t-warn_irreversible_cargo" class="text-sm text-gray-400 mb-6">
           Cette action est <strong>irréversible</strong>. La cargaison sera
           retirée de l'inventaire.
         </p>
@@ -330,19 +372,21 @@
             onclick="closeDeleteModal()"
             class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded shadow transition"
           >
-            Annuler
+            <span id="t-btn_cancel">Annuler</span>
           </button>
           <button
             onclick="confirmerSuppressionDefinitive()"
             class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow transition flex items-center"
           >
-            <i class="fa-solid fa-trash mr-2"></i> Oui, supprimer
+            <i class="fa-solid fa-trash mr-2"></i>
+            <span id="t-btn_confirm_delete">Oui, supprimer</span>
           </button>
         </div>
       </div>
     </div>
 
     <script src="assets/js/crud_cargaisons.js"></script>
+    <script src="assets/js/lang.js"></script>
 
     <script>
       fetch("components/sidebar.html")
@@ -359,12 +403,49 @@
               "font-bold"
             );
           }
-        });
-      function toggleSidebar() {
-        document
-          .getElementById("sidebar")
-          .classList.toggle("-translate-x-full");
-      }
+          const savedLang = localStorage.getItem('orbitLang') || 'fr';
+
+          // On s'assure que la fonction existe avant de l'appeler
+          if (typeof changeLanguage === "function") {
+              changeLanguage(savedLang);
+
+              // Petit hack pour mettre à jour le selecteur de langue du Header aussi
+              const langSelect = document.getElementById('langSelector');
+              if(langSelect) langSelect.value = savedLang;
+          }
+        })
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // 1. VÉRIFICATION DE LA SESSION (Sécurité)
+        const user = JSON.parse(localStorage.getItem("orbitUser"));
+
+        if (!user || !user.isLoggedIn) {
+          // Si pas connecté, on renvoie à la page de login
+          window.location.href = "index.html";
+          return;
+        }
+
+        // 2. MISE À JOUR DU HEADER (Nom & Rôle)
+        const nameEl = document.getElementById("userNameDisplay");
+        const roleEl = document.getElementById("userRoleDisplay");
+
+        if (nameEl) nameEl.innerText = user.name;
+        if (roleEl)
+          roleEl.innerText = user.role === "admin" ? "Commandant" : "Officier";
+
+        // 3. GESTION DÉCONNEXION
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", () => {
+            if (confirm("Voulez-vous vraiment quitter la station ?")) {
+              localStorage.removeItem("orbitUser");
+              window.location.href = "index.html";
+            }
+          });
+        }
+
+
+      });
     </script>
   </body>
 </html>

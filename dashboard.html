@@ -10,7 +10,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -38,15 +37,8 @@
         <header
           class="h-16 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-6 shadow-md z-10"
         >
-          <button
-            onclick="toggleSidebar()"
-            class="md:hidden text-gray-300 hover:text-white focus:outline-none"
-          >
-            <i class="fa-solid fa-bars text-xl"></i>
-          </button>
-
           <h2
-            id="pageTitle"
+            id="t-page_dashboard"
             class="text-xl font-semibold text-gray-100 ml-4 md:ml-0"
           >
             Vue Globale
@@ -54,6 +46,7 @@
 
           <div class="flex items-center space-x-4">
             <select
+              id="langSelector"
               class="bg-gray-700 text-sm text-gray-300 rounded border-gray-600 focus:ring-blue-500"
             >
               <option value="fr">FR 🇫🇷</option>
@@ -89,151 +82,198 @@
         <main
           class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-900 p-6 scroll-smooth"
         >
-          <div id="section-dashboard" class="space-y-6 animate-fade-in-up">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div
-                class="bg-gray-800 rounded-xl p-5 border border-gray-700 shadow-lg relative overflow-hidden"
-              >
-                <div
-                  class="absolute right-0 top-0 h-full w-1 bg-blue-500"
-                ></div>
-                <div class="flex justify-between items-start">
-                  <div>
-                    <p class="text-gray-400 text-xs uppercase font-bold">
-                      Astronautes Actifs
-                    </p>
-                    <h3 class="text-3xl font-bold text-white mt-1">12</h3>
-                  </div>
-                  <div class="p-3 bg-blue-500/10 rounded-lg text-blue-500">
-                    <i class="fa-solid fa-users text-xl"></i>
-                  </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div
+              class="bg-gray-800 rounded-xl p-5 border border-gray-700 shadow-lg relative overflow-hidden"
+            >
+              <div class="absolute right-0 top-0 h-full w-1 bg-blue-500"></div>
+              <div class="flex justify-between items-start">
+                <div>
+                  <p
+                    id="t-card_astro"
+                    class="text-gray-400 text-xs uppercase font-bold"
+                  >
+                    Astronautes Actifs
+                  </p>
+                  <h3
+                    id="stat-astro"
+                    class="text-3xl font-bold text-white mt-1"
+                  >
+                    --
+                  </h3>
                 </div>
-                <p class="text-xs text-green-400 mt-4 flex items-center">
-                  <i class="fa-solid fa-arrow-up mr-1"></i> +2 ce mois
-                </p>
-              </div>
-
-              <div
-                class="bg-gray-800 rounded-xl p-5 border border-gray-700 shadow-lg relative overflow-hidden"
-              >
-                <div
-                  class="absolute right-0 top-0 h-full w-1 bg-green-500"
-                ></div>
-                <div class="flex justify-between items-start">
-                  <div>
-                    <p class="text-gray-400 text-xs uppercase font-bold">
-                      Missions Réussies
-                    </p>
-                    <h3 class="text-3xl font-bold text-white mt-1">84%</h3>
-                  </div>
-                  <div class="p-3 bg-green-500/10 rounded-lg text-green-500">
-                    <i class="fa-solid fa-check-circle text-xl"></i>
-                  </div>
+                <div class="p-3 bg-blue-500/10 rounded-lg text-blue-500">
+                  <i class="fa-solid fa-users text-xl"></i>
                 </div>
-                <p class="text-xs text-gray-400 mt-4">Sur 50 lancements</p>
               </div>
-
-              <div
-                class="bg-gray-800 rounded-xl p-5 border border-gray-700 shadow-lg relative overflow-hidden"
-              >
-                <div
-                  class="absolute right-0 top-0 h-full w-1 bg-yellow-500"
-                ></div>
-                <div class="flex justify-between items-start">
-                  <div>
-                    <p class="text-gray-400 text-xs uppercase font-bold">
-                      Carburant Stock
-                    </p>
-                    <h3 class="text-3xl font-bold text-white mt-1">450T</h3>
-                  </div>
-                  <div class="p-3 bg-yellow-500/10 rounded-lg text-yellow-500">
-                    <i class="fa-solid fa-gas-pump text-xl"></i>
-                  </div>
-                </div>
-                <p class="text-xs text-red-400 mt-4 flex items-center">
-                  <i class="fa-solid fa-arrow-down mr-1"></i> -15% (Critique)
-                </p>
-              </div>
-
-              <div
-                class="bg-gray-800 rounded-xl p-5 border border-gray-700 shadow-lg relative overflow-hidden"
-              >
-                <div
-                  class="absolute right-0 top-0 h-full w-1 bg-purple-500"
-                ></div>
-                <div class="flex justify-between items-start">
-                  <div>
-                    <p class="text-gray-400 text-xs uppercase font-bold">
-                      Budget Mission
-                    </p>
-                    <h3 class="text-3xl font-bold text-white mt-1">2.4M $</h3>
-                  </div>
-                  <div class="p-3 bg-purple-500/10 rounded-lg text-purple-500">
-                    <i class="fa-solid fa-sack-dollar text-xl"></i>
-                  </div>
-                </div>
-                <p class="text-xs text-green-400 mt-4">Budget annuel 2025</p>
-              </div>
+              <p class="text-xs text-green-400 mt-4 flex items-center">
+                <i class="fa-solid fa-check mr-1"></i>
+                <span id="t-status_ready">Prêts au service</span>
+              </p>
             </div>
 
-            
-            <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg">
-              <h4 class="text-lg font-semibold text-gray-200 mb-4">
-                Aperçu des Modules
-              </h4>
-
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Astronautes (Pie) -->
-                <div class="bg-gray-900/40 p-6 rounded-xl border border-gray-700">
-                  <h5 class="text-base font-semibold text-gray-100 mb-4">Astronautes • Répartition des rôles</h5>
-                  <div class="h-80">
-                    <canvas id="chartAstronautes"></canvas>
-                  </div>
+            <div
+              class="bg-gray-800 rounded-xl p-5 border border-gray-700 shadow-lg relative overflow-hidden"
+            >
+              <div class="absolute right-0 top-0 h-full w-1 bg-green-500"></div>
+              <div class="flex justify-between items-start">
+                <div>
+                  <p
+                    id="t-card_missions"
+                    class="text-gray-400 text-xs uppercase font-bold"
+                  >
+                    Missions Totales
+                  </p>
+                  <h3
+                    id="stat-mission"
+                    class="text-3xl font-bold text-white mt-1"
+                  >
+                    --
+                  </h3>
                 </div>
-
-                <!-- Fusées (Donut) -->
-                <div class="bg-gray-900/40 p-6 rounded-xl border border-gray-700">
-                  <h5 class="text-base font-semibold text-gray-100 mb-4">Fusées • Statut</h5>
-                  <div class="h-80">
-                    <canvas id="chartFusees"></canvas>
-                  </div>
-                </div>
-
-                <!-- Missions (Bar) -->
-                <div class="bg-gray-900/40 p-6 rounded-xl border border-gray-700">
-                  <h5 class="text-base font-semibold text-gray-100 mb-4">Missions • Par destination</h5>
-                  <div class="h-80">
-                    <canvas id="chartMissions"></canvas>
-                  </div>
-                </div>
-
-                <!-- Cargaisons (Line) -->
-                <div class="bg-gray-900/40 p-6 rounded-xl border border-gray-700">
-                  <h5 class="text-base font-semibold text-gray-100 mb-4">Cargaisons • Poids par entrée</h5>
-                  <div class="h-80">
-                    <canvas id="chartCargaisons"></canvas>
-                  </div>
-                </div>
-
-                <!-- Planètes (Area) -->
-                <div class="lg:col-span-2 bg-gray-900/40 p-6 rounded-xl border border-gray-700">
-                  <h5 class="text-base font-semibold text-gray-100 mb-4">Planètes • Distance (Area)</h5>
-                  <div class="h-96">
-                    <canvas id="chartPlanetes"></canvas>
-                  </div>
+                <div class="p-3 bg-green-500/10 rounded-lg text-green-500">
+                  <i class="fa-solid fa-flag text-xl"></i>
                 </div>
               </div>
+              <p id="stat-mission-desc" class="text-xs text-gray-400 mt-4">
+                Calcul en cours...
+              </p>
             </div>
 
+            <div
+              class="bg-gray-800 rounded-xl p-5 border border-gray-700 shadow-lg relative overflow-hidden"
+            >
+              <div
+                class="absolute right-0 top-0 h-full w-1 bg-yellow-500"
+              ></div>
+              <div class="flex justify-between items-start">
+                <div>
+                  <p
+                    id="t-card_cargo"
+                    class="text-gray-400 text-xs uppercase font-bold"
+                  >
+                    Logistique (Poids)
+                  </p>
+                  <h3
+                    id="stat-cargo"
+                    class="text-3xl font-bold text-white mt-1"
+                  >
+                    --
+                  </h3>
+                </div>
+                <div class="p-3 bg-yellow-500/10 rounded-lg text-yellow-500">
+                  <i class="fa-solid fa-weight-hanging text-xl"></i>
+                </div>
+              </div>
+              <p class="text-xs text-yellow-400 mt-4 flex items-center">
+                <i class="fa-solid fa-boxes-stacked mr-1"></i> Stock total
+              </p>
+            </div>
+
+            <div
+              class="bg-gray-800 rounded-xl p-5 border border-gray-700 shadow-lg relative overflow-hidden"
+            >
+              <div
+                class="absolute right-0 top-0 h-full w-1 bg-purple-500"
+              ></div>
+              <div class="flex justify-between items-start">
+                <div>
+                  <p
+                    id="t-card_budget"
+                    class="text-gray-400 text-xs uppercase font-bold"
+                  >
+                    Coût Flotte
+                  </p>
+                  <h3
+                    id="stat-budget"
+                    class="text-3xl font-bold text-white mt-1"
+                  >
+                    --
+                  </h3>
+                </div>
+                <div class="p-3 bg-purple-500/10 rounded-lg text-purple-500">
+                  <i class="fa-solid fa-sack-dollar text-xl"></i>
+                </div>
+              </div>
+              <p class="text-xs text-green-400 mt-4">
+                Estimation (150M$/Fusée)
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg mt-6"
+          >
+            <h4
+              id="t-graph_overview"
+              class="text-lg font-semibold text-gray-200 mb-4"
+            >
+              Aperçu des Modules
+            </h4>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div class="bg-gray-900/40 p-6 rounded-xl border border-gray-700">
+                <h5
+                  id="t-graph_astro"
+                  class="text-base font-semibold text-gray-100 mb-4"
+                >
+                  Astronautes • Répartition des rôles
+                </h5>
+                <div class="h-80"><canvas id="chartAstronautes"></canvas></div>
+              </div>
+
+              <div class="bg-gray-900/40 p-6 rounded-xl border border-gray-700">
+                <h5
+                  id="t-graph_rockets"
+                  class="text-base font-semibold text-gray-100 mb-4"
+                >
+                  Fusées • Statut
+                </h5>
+                <div class="h-80"><canvas id="chartFusees"></canvas></div>
+              </div>
+
+              <div class="bg-gray-900/40 p-6 rounded-xl border border-gray-700">
+                <h5
+                  id="t-graph_missions"
+                  class="text-base font-semibold text-gray-100 mb-4"
+                >
+                  Missions • Par destination
+                </h5>
+                <div class="h-80"><canvas id="chartMissions"></canvas></div>
+              </div>
+
+              <div class="bg-gray-900/40 p-6 rounded-xl border border-gray-700">
+                <h5
+                  id="t-graph_cargo"
+                  class="text-base font-semibold text-gray-100 mb-4"
+                >
+                  Cargaisons • Poids par entrée
+                </h5>
+                <div class="h-80"><canvas id="chartCargaisons"></canvas></div>
+              </div>
+
+              <div
+                class="lg:col-span-2 bg-gray-900/40 p-6 rounded-xl border border-gray-700"
+              >
+                <h5
+                  id="t-graph_planets"
+                  class="text-base font-semibold text-gray-100 mb-4"
+                >
+                  Planètes • Distance
+                </h5>
+                <div class="h-96"><canvas id="chartPlanetes"></canvas></div>
+              </div>
+            </div>
           </div>
         </main>
       </div>
     </div>
 
     <script src="assets/js/app.js"></script>
+    <script src="assets/js/lang.js"></script>
 
     <script>
-
+      // 1. Sidebar Injection
       fetch("components/sidebar.html")
         .then((response) => response.text())
         .then((data) => {
@@ -248,10 +288,53 @@
               "font-bold"
             );
           }
+          const savedLang = localStorage.getItem('orbitLang') || 'fr';
+
+          // On s'assure que la fonction existe avant de l'appeler
+          if (typeof changeLanguage === "function") {
+              changeLanguage(savedLang);
+
+              // Petit hack pour mettre à jour le selecteur de langue du Header aussi
+              const langSelect = document.getElementById('langSelector');
+              if(langSelect) langSelect.value = savedLang;
+          }
         })
         .catch((error) => console.error("Erreur menu:", error));
 
-      
+      // 2. CALCUL DES STATS
+      document.addEventListener("DOMContentLoaded", () => {
+        // ASTRONAUTES
+        const astros = JSON.parse(localStorage.getItem("astronautes") || "[]");
+        document.getElementById("stat-astro").innerText = astros.length;
+
+        // MISSIONS
+        const missions = JSON.parse(
+          localStorage.getItem("missions_db") || "[]"
+        );
+        document.getElementById("stat-mission").innerText = missions.length;
+
+        const terminees = missions.filter(
+          (m) => m.statut === "Terminée"
+        ).length;
+        document.getElementById(
+          "stat-mission-desc"
+        ).innerText = `${terminees} missions terminées`;
+
+        // CARGAISONS
+        const cargos = JSON.parse(
+          localStorage.getItem("cargaisons_db") || "[]"
+        );
+        const poidsTotal = cargos.reduce(
+          (acc, item) => acc + Number(item.poids || 0),
+          0
+        );
+        document.getElementById("stat-cargo").innerText = poidsTotal + " kg";
+
+        // BUDGET
+        const fusees = JSON.parse(localStorage.getItem("fusees_db") || "[]");
+        const budget = fusees.length * 150;
+        document.getElementById("stat-budget").innerText = budget + " M$";
+      });
     </script>
   </body>
 </html>

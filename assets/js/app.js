@@ -1,5 +1,4 @@
 
-
 document.addEventListener('DOMContentLoaded', () => {
 
     const user = JSON.parse(localStorage.getItem('orbitUser'));
