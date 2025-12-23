@@ -176,29 +176,55 @@
               </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-              <div
-                class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg"
-              >
-                <h4 class="text-lg font-semibold text-gray-200 mb-4">
-                  Missions par Destination
-                </h4>
-                <div class="h-64">
-                  <canvas id="missionsChart"></canvas>
-                </div>
-              </div>
+            
+            <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg">
+              <h4 class="text-lg font-semibold text-gray-200 mb-4">
+                Aperçu des Modules
+              </h4>
 
-              <div
-                class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg"
-              >
-                <h4 class="text-lg font-semibold text-gray-200 mb-4">
-                  État de la Flotte
-                </h4>
-                <div class="h-64 flex justify-center">
-                  <canvas id="fleetChart"></canvas>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Astronautes (Pie) -->
+                <div class="bg-gray-900/40 p-6 rounded-xl border border-gray-700">
+                  <h5 class="text-base font-semibold text-gray-100 mb-4">Astronautes • Répartition des rôles</h5>
+                  <div class="h-80">
+                    <canvas id="chartAstronautes"></canvas>
+                  </div>
+                </div>
+
+                <!-- Fusées (Donut) -->
+                <div class="bg-gray-900/40 p-6 rounded-xl border border-gray-700">
+                  <h5 class="text-base font-semibold text-gray-100 mb-4">Fusées • Statut</h5>
+                  <div class="h-80">
+                    <canvas id="chartFusees"></canvas>
+                  </div>
+                </div>
+
+                <!-- Missions (Bar) -->
+                <div class="bg-gray-900/40 p-6 rounded-xl border border-gray-700">
+                  <h5 class="text-base font-semibold text-gray-100 mb-4">Missions • Par destination</h5>
+                  <div class="h-80">
+                    <canvas id="chartMissions"></canvas>
+                  </div>
+                </div>
+
+                <!-- Cargaisons (Line) -->
+                <div class="bg-gray-900/40 p-6 rounded-xl border border-gray-700">
+                  <h5 class="text-base font-semibold text-gray-100 mb-4">Cargaisons • Poids par entrée</h5>
+                  <div class="h-80">
+                    <canvas id="chartCargaisons"></canvas>
+                  </div>
+                </div>
+
+                <!-- Planètes (Area) -->
+                <div class="lg:col-span-2 bg-gray-900/40 p-6 rounded-xl border border-gray-700">
+                  <h5 class="text-base font-semibold text-gray-100 mb-4">Planètes • Distance (Area)</h5>
+                  <div class="h-96">
+                    <canvas id="chartPlanetes"></canvas>
+                  </div>
                 </div>
               </div>
             </div>
+
           </div>
         </main>
       </div>
