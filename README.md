@@ -39,8 +39,10 @@ git clone [https://github.com/barakatyoussef/OrbitManager.git](https://github.co
 cd OrbitManager
 ```
 ### 2. Lancer l'application
-Il suffit d'ouvrir le fichier index.html dans votre navigateur.
-*Recommandation : Pour une meilleure expérience (icônes, chargement JSON), utilisez l'extension Live Server sur VS Code.*
+Il suffit d'ouvrir le fichier `index.html` dans votre navigateur.
+
+> **💡 Recommandation :**
+> Pour une meilleure expérience (icônes, chargement JSON), utilisez l'extension **Live Server** sur VS Code.
 
 ## 👥 Auteurs & Contribution
 
